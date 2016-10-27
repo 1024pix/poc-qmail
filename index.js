@@ -1,91 +1,54 @@
-const Imap = require('imap');
-const inspect = require('util').inspect;
+const MailListener = require('./lib/mail-listener');
 
-const imap = new Imap({
-  user: 'poc.node.imap@gmail.com',
+const mailListener = new MailListener({
+  username: 'poc.node.imap@gmail.com',
   password: 'imap.node.poc',
   host: 'imap.gmail.com',
-  port: 993,
-  tls: true
+  port: 993, // imap port
+  tls: true,
+  connTimeout: 10000, // Default by node-imap
+  authTimeout: 5000, // Default by node-imap,
+  //debug: console.log, // Or your custom function with only one incoming argument. Default: null
+  mailbox: "INBOX", // mailbox to monitor
+  searchFilter: ["UNSEEN", "FLAGGED"], // the search filter being used after an IDLE notification has been retrieved
+  markSeen: true, // all fetched email willbe marked as seen and not fetched next time
+  fetchUnreadOnStart: true, // use it only if you want to get all unread email on lib start. Default is `false`,
+  mailParserOptions: {streamAttachments: true}, // options to be passed to mailParser lib.
+  attachments: true, // download attachments as they are encountered to the project directory
+  attachmentOptions: { directory: "attachments/" } // specify a download directory for attachments
 });
 
-function openInbox(cb) {
-  imap.openBox('INBOX', true, cb);
-}
+mailListener.start(); // start listening
 
-imap.once('ready', _ => {
+// stop listening
+//mailListener.stop();
 
-  imap.getBoxes((err, boxes) => {
-    console.log('\n----- Imap#getBoxes -----\n');
-    console.log(inspect(boxes));
-    console.log('\n-------------------------\n');
-  });
-
-  imap.subscribeBox('INBOX', err => {
-    console.log('\n----- Imap#subscribeBox -----\n');
-    if (err) throw err;
-    console.log('Listening for mails...');
-    console.log('\n-------------------------\n');
-  });
-
-  /*
-    openInbox((err, box) => {
-
-      if (err) throw err;
-
-      const imapFetch = imap.seq.fetch('1:*', {
-        bodies: 'HEADER.FIELDS (FROM TO SUBJECT DATE)',
-        struct: true
-      });
-
-      imapFetch.on('message', (imapMessage, seqno) => {
-
-        console.log('Message #%d', seqno);
-        const prefix = '(#' + seqno + ') ';
-
-        imapMessage.on('body', (stream, info) => {
-          let buffer = '';
-          stream.on('data', chunk => {
-            buffer += chunk.toString('utf8');
-          });
-          stream.once('end', _ => {
-            console.log(prefix + 'Parsed header: %s', inspect(Imap.parseHeader(buffer)));
-          });
-        });
-
-        imapMessage.once('attributes', attrs => {
-          console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
-        });
-
-        imapMessage.once('end', _ => {
-          console.log(prefix + 'Finished');
-        });
-      });
-
-      imapFetch.once('error', err => {
-        console.log('Fetch error: ' + err);
-      });
-
-      imapFetch.once('end', _ => {
-        console.log('Done fetching all messages!');
-        imap.end();
-      });
-    });
-  */
+mailListener.on("server:connected", _ => {
+  console.log("imapConnected");
 });
 
-imap.on('mail', numNewMsgs => {
-
-  console.log('New message has come : ' + numNewMsgs);
+mailListener.on("server:disconnected", _ => {
+  console.log("imapDisconnected");
 });
 
-imap.once('error', err => {
+mailListener.on("error", err => {
   console.log(err);
 });
 
-imap.once('end', _ => {
-  console.log('Connection ended');
+mailListener.on("mail", (mail, seqno, attributes) => {
+  // do something with mail object including attachments
+  //console.log("emailParsed", mail);
+  console.log("emailParsed", mail);
+  // mail processing code goes here
 });
 
-imap.connect();
+mailListener.on("attachment", attachment => {
+  console.log(attachment.path);
+});
 
+mailListener.on("empty", UIDs => {
+  console.log(UIDs);
+});
+
+// it's possible to access imap object from node-imap library for performing additional actions. E.x.
+// mailListener.imap.move(:msguids, :mailboxes, function(){})
