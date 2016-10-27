@@ -36,18 +36,17 @@ mailListener.on("error", err => {
 });
 
 mailListener.on("mail", (mail, seqno, attributes) => {
-  // do something with mail object including attachments
-  //console.log("emailParsed", mail);
-  console.log("emailParsed", mail);
-  // mail processing code goes here
+  console.log(`\n----- #${seqno} -----\n`);
+  console.log(`Subject: ${mail.subject}`);
+  console.log(`From: ${mail.from}`);
+  console.log(`To: ${mail.to}`);
+  console.log(`Cc: ${mail.cc}`);
+  console.log(`Bcc: ${mail.bcc}`);
+  console.log(`\n${mail.html}\n`);
 });
 
 mailListener.on("attachment", attachment => {
   console.log(attachment.path);
-});
-
-mailListener.on("empty", UIDs => {
-  console.log(UIDs);
 });
 
 // it's possible to access imap object from node-imap library for performing additional actions. E.x.
