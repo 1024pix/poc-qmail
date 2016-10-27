@@ -40,9 +40,9 @@ mailListener.on("mail", (mail, seqno, attributes) => {
   console.log(`Subject: ${mail.subject}`);
   console.log(`From: ${mail.from}`);
   console.log(`To: ${mail.to}`);
-  console.log(`Cc: ${mail.cc}`);
-  console.log(`Bcc: ${mail.bcc}`);
-  console.log(`\n${mail.html}\n`);
+  if(mail.cc) console.log(`Cc: ${mail.cc}`);
+  if(mail.bcc) console.log(`Bcc: ${mail.bcc}`);
+  console.log(`\n${mail.text}\n`);
 });
 
 mailListener.on("attachment", attachment => {
