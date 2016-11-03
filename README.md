@@ -3,7 +3,7 @@ Proof of concept that it is possible to fetch &amp; parse notification emails (s
 
 ## Startup
 
-1. Get the code: `$ git clone git@github.com:jbuget/poc-node-imap.git`
+1. Get the code: `git clone git@github.com:jbuget/poc-node-imap.git`
 2. In file `index.js`, edit your email and password
 3. Fetch the dependencies : `npm install`
 4. Start to listen for mails : `npm start`
