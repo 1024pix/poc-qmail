@@ -1,19 +1,19 @@
 const MailListener = require('./lib/mail-listener');
 
 const mailListener = new MailListener({
-  username: 'poc.node.imap@gmail.com',
-  password: 'imap.node.poc',
+  username: <your_email>, // Setup your email
+  password: <your_password>, // Setup your password
   host: 'imap.gmail.com',
   port: 993, // imap port
   tls: true,
   connTimeout: 10000, // Default by node-imap
   authTimeout: 5000, // Default by node-imap,
-  //debug: console.log, // Or your custom function with only one incoming argument. Default: null
+  debug: console.log, // Or your custom function with only one incoming argument. Default: null
   mailbox: "INBOX", // mailbox to monitor
   searchFilter: ["UNSEEN", "FLAGGED"], // the search filter being used after an IDLE notification has been retrieved
   markSeen: true, // all fetched email willbe marked as seen and not fetched next time
   fetchUnreadOnStart: true, // use it only if you want to get all unread email on lib start. Default is `false`,
-  mailParserOptions: {streamAttachments: true}, // options to be passed to mailParser lib.
+  mailParserOptions: { streamAttachments: true }, // options to be passed to mailParser lib.
   attachments: true, // download attachments as they are encountered to the project directory
   attachmentOptions: { directory: "attachments/" } // specify a download directory for attachments
 });
@@ -36,12 +36,12 @@ mailListener.on("error", err => {
 });
 
 mailListener.on("mail", (mail, seqno, attributes) => {
-  console.log(`\n----- #${seqno} -----\n`);
+  console.log(`\n==================== #${seqno} ====================\n`);
   console.log(`Subject: ${mail.subject}`);
-  console.log(`From: ${mail.from}`);
-  console.log(`To: ${mail.to}`);
-  if(mail.cc) console.log(`Cc: ${mail.cc}`);
-  if(mail.bcc) console.log(`Bcc: ${mail.bcc}`);
+  console.log(`From: ${mail.from.map(data => data.name + ' <' + data.address + '>').join()}`);
+  console.log(`To: ${mail.to.map(data => data.name + ' <' + data.address + '>').join()}`);
+  if (mail.cc) console.log(`Cc: ${mail.cc}`);
+  if (mail.bcc) console.log(`Bcc: ${mail.bcc}`);
   console.log(`\n${mail.text}\n`);
 });
 

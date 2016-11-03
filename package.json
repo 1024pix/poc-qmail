@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Proof of concept that it is possible to fetch & parse notification emails (sent by Facebook, Twitter, etc.) from a Gmail account.",
   "scripts": {
-    "start": "./node_modules/.bin/nodemon"
+    "start": "./node_modules/.bin/nodemon",
+    "test": "./node_modules/.bin/mocha -w"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,11 @@
     "mail-listener2": "^0.2.0"
   },
   "devDependencies": {
-    "nodemon": "^1.11.0"
+    "chai": "^3.5.0",
+    "hoodiecrow-imap": "^2.1.0",
+    "mocha": "^3.1.2",
+    "nodemon": "^1.11.0",
+    "sinon": "^1.17.6",
+    "sinon-chai": "^2.8.0"
   }
 }
