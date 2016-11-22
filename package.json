@@ -2,10 +2,6 @@
   "name": "poc-node-imap",
   "version": "1.0.0",
   "description": "Proof of concept that it is possible to fetch & parse notification emails (sent by Facebook, Twitter, etc.) from a Gmail account.",
-  "scripts": {
-    "start": "./node_modules/.bin/nodemon",
-    "test": "./node_modules/.bin/mocha -w"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jbuget/poc-node-imap.git"
@@ -17,6 +13,7 @@
   },
   "homepage": "https://github.com/jbuget/poc-node-imap#readme",
   "dependencies": {
+    "cheerio": "^0.22.0",
     "mail-listener2": "^0.2.0"
   },
   "devDependencies": {
@@ -26,5 +23,10 @@
     "nodemon": "^1.11.0",
     "sinon": "^1.17.6",
     "sinon-chai": "^2.8.0"
+  },
+  "scripts": {
+    "start": "node index",
+    "start:dev": "./node_modules/.bin/nodemon",
+    "test": "./node_modules/.bin/mocha -w"
   }
 }
